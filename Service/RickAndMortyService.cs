@@ -16,11 +16,34 @@ public class RickAndMortyService : IRickAndMortyService
     }
     public async Task<EpisodeResponse?> GetAllEpisodesAsync()
     {
-        var response = await client.GetAsync($"{client.BaseAddress}/episode");
-        //throws exception, so need to handle it in the main method
-        response.EnsureSuccessStatusCode();
-        var contentString = await response.Content.ReadAsStringAsync();
-        var data = JsonConvert.DeserializeObject<EpisodeResponse>(contentString);
-        return data;
+        try
+        {
+            var response = await client.GetAsync($"{client.BaseAddress}/episode");
+            response.EnsureSuccessStatusCode();
+            var contentString = await response.Content.ReadAsStringAsync();
+            var episodeResp = JsonConvert.DeserializeObject<EpisodeResponse>(contentString);
+            return episodeResp;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.StackTrace);
+            return null;
+        }
+    }
+
+    public async Task<EpisodeResponse?> GetPageAsync(string httpRequest)
+    {
+        try
+        {
+            var response = await client.GetAsync(httpRequest);
+            response.EnsureSuccessStatusCode();
+            var contentString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<EpisodeResponse>(contentString);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.StackTrace);
+            return null;
+        }
     }
 }

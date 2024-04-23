@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace RickAndMortyCLI.Model;
 public class Info
 {

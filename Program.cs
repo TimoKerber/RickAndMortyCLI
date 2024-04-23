@@ -1,4 +1,5 @@
 ﻿using RickAndMortyCLI.Service;
+using RickAndMortyCLI.Util;
 
 namespace RickAndMortyCLI;
 public class Program()
@@ -8,6 +9,11 @@ public class Program()
         RickAndMortyService service = new();
         
         var response = await service.GetAllEpisodesAsync();
-        Console.WriteLine(response);
+
+        while(response != null && response.Info != null && response.Info.Next != null)
+        {
+            CliHelper.PrintEpisodes(response);
+            response = await service.GetPageAsync(response.Info.Next);
+        }
     }
 }
