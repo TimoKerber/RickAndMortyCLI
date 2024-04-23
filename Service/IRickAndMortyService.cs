@@ -10,9 +10,21 @@ public interface IRickAndMortyService
     /// <returns>List of all Episodes</returns>
     Task<EpisodeResponse?> GetAllEpisodesAsync();
     /// <summary>
-    /// gets the next page for a prior request
+    /// requests the next page for a prior request
     /// </summary>
     /// <param name="page">page number for next request</param>
     /// <returns></returns>
-    Task<EpisodeResponse?> GetPageAsync(string baseString);
+    Task<List<Episode>?> GetEpisodePageAsync(string httpRequest);
+    /// <summary>
+    /// requests info for a single character
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<Character?> GetCharacterAsync(int id);
+    /// <summary>
+    /// requests info for multiple characters
+    /// </summary>
+    /// <param name="ids"></param>
+    /// <returns></returns>
+    Task<List<Character>?> GetMultipleCharactersAsync(int[] ids);
 }
