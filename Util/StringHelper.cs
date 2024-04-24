@@ -11,23 +11,20 @@ public class StringHelper
     /// <param name="route"></param>
     /// <param name="ids"></param>
     /// <returns></returns>
-    public static string GetMultiple(Uri baseUri, string route,  int[] ids)
+    public static string GetStringForMultipleRequest(Uri baseUri, string route,  int[] ids)
     {
-        if(ids.Length == 0)
-        {
-            return $"{baseUri}{route}";
-        }
-        string getRequest = $"{baseUri}{route}/";
+        string getRequest = $"{baseUri}{route}";
+        if(ids.Length == 0) return getRequest;
         foreach(int id in ids)
         {
             if (id != ids.Last())
-                {
-                    getRequest += $"{id},";
-                }
+            {
+                getRequest += $"/{id},";
+            }
             else 
-                {
-                    getRequest += $"{id}";
-                }
+            {
+                getRequest += $"/{id}";
+            }
         }
         return getRequest;
     }
@@ -40,16 +37,19 @@ public class StringHelper
     public static int[] GetCharacterIds(List<string>? characterRequests)
     {
         if (characterRequests == null) return [];
-        int i = 0;
         int[] ids = new int[characterRequests.Count];
-        foreach(string characterRequest in characterRequests)
+        for(int index = 0; index < characterRequests.Count; index++)
         {
-            ids[i] = int.Parse(characterRequest.Split("/").Last());
-            i++;
+            ids[index] = int.Parse(characterRequests[index].Split("/").Last());
         }
         return ids;
     }
 
+    /// <summary>
+    /// prepares a list of character names for command line output
+    /// </summary>
+    /// <param name="characters"></param>
+    /// <returns></returns>
     public static List<string> GetCharacterNames(List<Character>? characters)
     {
         List<string> characterNames = [];

@@ -22,8 +22,8 @@ public class RickAndMortyService : IRickAndMortyService
             var response = await client.GetAsync($"{client.BaseAddress}/character/{id}");
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            var characterResp = JsonConvert.DeserializeObject<Character>(content);
-            return characterResp;
+            var characterResponse = JsonConvert.DeserializeObject<Character>(content);
+            return characterResponse;
         }
         catch (Exception e)
         {
@@ -37,7 +37,7 @@ public class RickAndMortyService : IRickAndMortyService
         try
         {
             if(client.BaseAddress == null) throw new NullReferenceException();
-            string getRequest = StringHelper.GetMultiple(client.BaseAddress, "character", ids);
+            string getRequest = StringHelper.GetStringForMultipleRequest(client.BaseAddress, "character", ids);
             var response = await client.GetAsync(getRequest);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();

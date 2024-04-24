@@ -13,12 +13,15 @@ public class Program()
         {
             foreach(Episode episode in episodes)
             {
-                //get characters as strings
                 int[] characterIds = StringHelper.GetCharacterIds(episode.Characters);
                 var characters = await service.GetMultipleCharactersAsync(characterIds);
                 List<string> characterNames = StringHelper.GetCharacterNames(characters); 
-                CliHelper.PrintEpisodes(episode, characterNames);
+                CliHelper.PrintEpisode(episode, characterNames);
             }
+        }
+        else
+        {
+            Console.WriteLine("No Episodes found");
         }
     }
 }

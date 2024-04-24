@@ -3,7 +3,7 @@ using RickAndMortyCLI.Model;
 namespace RickAndMortyCLI.Util;
 public class CliHelper
 {
-    public static void PrintEpisodes(Episode episode, List<string> characterNames)
+    public static void PrintEpisode(Episode episode, List<string> characterNames)
     {
         if(episode == null)
         {
