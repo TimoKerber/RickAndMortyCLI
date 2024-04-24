@@ -7,6 +7,7 @@ public class Program()
     public static async Task Main(string[] args)
     {
         RickAndMortyService service = new();
-        var character = await service.GetMultipleCharactersAsync([1, 2, 3]);
+        var episodes = await service.GetAllEpisodesAsync();
+        CliHelper.PrintEpisodes(episodes);
     }
 }

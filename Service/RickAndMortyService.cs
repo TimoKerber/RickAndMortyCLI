@@ -13,16 +13,26 @@ public class RickAndMortyService : IRickAndMortyService
         {
             BaseAddress = new Uri("https://rickandmortyapi.com/api/")
         };
+
     }
-    public async Task<EpisodeResponse?> GetAllEpisodesAsync()
+    public async Task<List<Episode>?> GetAllEpisodesAsync(string httpRequest = "https://rickandmortyapi.com/api/episode")
     {
         try
         {
-            var response = await client.GetAsync($"{client.BaseAddress}/episode");
+            var response = await client.GetAsync(httpRequest);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            var episodeResponse = JsonConvert.DeserializeObject<EpisodeResponse>(content);
-            return episodeResponse;
+            var episodeResponse = JsonConvert.DeserializeObject<EpisodeResponse>(content) ?? throw new NullReferenceException();
+            var episodeList = episodeResponse.Results;
+
+            int pages = episodeResponse.Info.Pages;
+            int currentPage = 2;
+            while(currentPage <= pages)
+            {
+                episodeList.AddRange(await GetEpisodePageAsync($"{client.BaseAddress}/episode?page={currentPage}"));
+                currentPage++;
+            }
+            return episodeList;
         }
         catch (Exception e)
         {
@@ -53,11 +63,11 @@ public class RickAndMortyService : IRickAndMortyService
         try
         {
             if(client.BaseAddress == null) throw new NullReferenceException();
-            string getRequest = ResponseStringHelper.GetMultiple(client.BaseAddress, "character", ids);
+            string getRequest = StringHelper.GetMultiple(client.BaseAddress, "character", ids);
             var response = await client.GetAsync(getRequest);
             response.EnsureSuccessStatusCode();
-            var contentString = await response.Content.ReadAsStringAsync();
-            var characterResponse = JsonConvert.DeserializeObject<List<Character>>(contentString) ?? throw new NullReferenceException();
+            var content = await response.Content.ReadAsStringAsync();
+            var characterResponse = JsonConvert.DeserializeObject<List<Character>>(content) ?? throw new NullReferenceException();
             return characterResponse;
         }
         catch (Exception e)
@@ -67,14 +77,14 @@ public class RickAndMortyService : IRickAndMortyService
         }
     }
 
-    public async Task<List<Episode>?> GetEpisodePageAsync(string httpRequest)
+    public async Task<List<Episode>?> GetEpisodePageAsync(string request)
     {
         try
         {
-            var response = await client.GetAsync(httpRequest);
+            var response = await client.GetAsync(request);
             response.EnsureSuccessStatusCode();
-            var contentString = await response.Content.ReadAsStringAsync();
-            var episodeResponse =  JsonConvert.DeserializeObject<EpisodeResponse>(contentString) ?? throw new NullReferenceException();
+            var content = await response.Content.ReadAsStringAsync();
+            var episodeResponse =  JsonConvert.DeserializeObject<EpisodeResponse>(content) ?? throw new NullReferenceException();
             return episodeResponse.Results;
         }
         catch (Exception e)
