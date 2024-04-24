@@ -3,16 +3,25 @@ using RickAndMortyCLI.Model;
 namespace RickAndMortyCLI.Util;
 public class CliHelper
 {
-    public static void PrintEpisodes(List<Episode> episodes)
+    public static void PrintEpisodes(Episode episode, List<string> characterNames)
     {
-        if(episodes == null || episodes.Count == 0)
+        if(episode == null)
         {
             Console.WriteLine("No episodes available");
             return ;
         }
-        foreach(Episode episode in episodes)
+        string output = $"Episode {episode.Id}\nName: {episode.Name}\nCharacters: ";
+        foreach(string characterName in characterNames)
         {
-            Console.WriteLine($"Episode {episode.Id}\nName: {episode.Name}\n");
+            if (characterName != characterNames.Last())
+            {
+                output += $"{characterName}, ";
+            }
+            else
+            {
+                output += $"{characterName}.\n";
+            }
         }
+        Console.WriteLine(output);
     }
 }

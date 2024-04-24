@@ -13,32 +13,6 @@ public class RickAndMortyService : IRickAndMortyService
         {
             BaseAddress = new Uri("https://rickandmortyapi.com/api/")
         };
-
-    }
-    public async Task<List<Episode>?> GetAllEpisodesAsync(string httpRequest = "https://rickandmortyapi.com/api/episode")
-    {
-        try
-        {
-            var response = await client.GetAsync(httpRequest);
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            var episodeResponse = JsonConvert.DeserializeObject<EpisodeResponse>(content) ?? throw new NullReferenceException();
-            var episodeList = episodeResponse.Results;
-
-            int pages = episodeResponse.Info.Pages;
-            int currentPage = 2;
-            while(currentPage <= pages)
-            {
-                episodeList.AddRange(await GetEpisodePageAsync($"{client.BaseAddress}/episode?page={currentPage}"));
-                currentPage++;
-            }
-            return episodeList;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.StackTrace);
-            return null;
-        }
     }
 
     public async Task<Character?> GetCharacterAsync(int id)
@@ -67,7 +41,7 @@ public class RickAndMortyService : IRickAndMortyService
             var response = await client.GetAsync(getRequest);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-            var characterResponse = JsonConvert.DeserializeObject<List<Character>>(content) ?? throw new NullReferenceException();
+            var characterResponse = JsonConvert.DeserializeObject<List<Character>>(content);
             return characterResponse;
         }
         catch (Exception e)
@@ -77,11 +51,12 @@ public class RickAndMortyService : IRickAndMortyService
         }
     }
 
-    public async Task<List<Episode>?> GetEpisodePageAsync(string request)
+    public async Task<List<Episode>?> GetEpisodePageAsync()
     {
         try
         {
-            var response = await client.GetAsync(request);
+            var url = $"{client.BaseAddress}/episode";
+            var response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
             var episodeResponse =  JsonConvert.DeserializeObject<EpisodeResponse>(content) ?? throw new NullReferenceException();
